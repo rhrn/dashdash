@@ -1,0 +1,17 @@
+extends layouts/default
+
+block login
+  form(ng-controller="joinController", ng-show="user.token == empty")
+    div: input(type="text", placeholder="email", ng-model="user.email")
+    span.inline-help {{error[0].msg}}
+    div: input(type="password", placeholder="password", ng-model="user.password")
+    span.inline-help {{error[1].msg}}
+    div: button.btn(ng-click="join()") join
+
+block user
+    ul.nav.pull-right(ng-controller="authController", ng-show="user.token != empty")
+      li: a Hello, {{user.email}}!
+      li: a(href="#", ng-click="logout()") logout
+
+block scripts
+  script(src="static/js/dashdash.js")

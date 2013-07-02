@@ -1,0 +1,38 @@
+!!!
+html(ng-app="app")
+
+  head
+    title dashdash.ru
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    link(href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css", rel="stylesheet")
+
+  body
+  
+    .container-fluid
+
+      block nav
+        .navbar
+          .navbar-inner
+            a.brand(href="#") DashDash.ru
+            ul.nav
+              li: a(href="#home") Home
+              li: a(href="#items") Goods
+              li: a(href="#items") Showcase
+              li: a(href="#orders") Orders
+            block user
+
+     .row-fluid 
+      .span6.offset3
+        block login
+
+      block content
+
+      block footer
+        .row-fluid
+          .span12
+            span.twitter @dashdash
+            span.facebook @dashdash
+            span.vkontakte @dashdash
+
+    script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js")
+    block scripts
