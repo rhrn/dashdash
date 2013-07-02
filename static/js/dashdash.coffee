@@ -1,27 +1,52 @@
 'use strict';
 app = angular.module 'app', []
 
-app.controller 'authController', ['$rootScope', '$scope', '$http', ($rootScope, $scope, $http) ->
+app.factory 'User', ['$rootScope', ($rootScope) ->
 
-  $rootScope.$on 'join', (event, data) ->
+    User = $rootScope.$new()
+
+    User.$on 'join', (event, data) ->
+      #console.log 'service join'
+      return
+
+    User.$on 'logout', (event, data) ->
+      #console.log 'service logout'
+      return
+
+    User.init = 
+      userId: ""
+      email: ""
+      token: null
+
+    User
+]
+
+app.controller 'authController', ['$scope', 'User', '$http', ($scope, User, $http) ->
+
+  $scope.user = User.init
+
+  User.$on 'join', (event, data) ->
     #console.log 'on join', event, data
     $scope.user = data
     return
 
   $scope.logout = ->
     #console.log 'emit logout'
-    $rootScope.$emit('logout', {});
+    User.$emit('logout', {});
     $scope.user = {}
     return
 
   return
 ]
 
-app.controller 'joinController', ['$rootScope', '$scope', '$http', ($rootScope, $scope, $http) ->
+app.controller 'joinController', ['$scope', 'User', '$http', ($scope, User, $http) ->
 
-  $rootScope.$on 'logout', (event, data) ->
+  $scope.user = User.init
+
+  User.$on 'logout', (event, data) ->
     #console.log 'on logout', event, data
     $scope.user = data
+    $scope.error = data
     return
 
   $scope.join = ->
@@ -29,7 +54,7 @@ app.controller 'joinController', ['$rootScope', '$scope', '$http', ($rootScope, 
       .success (data) ->
         #console.log 'success', data 
         $scope.user = data
-        $rootScope.$emit('join', data);
+        User.$emit('join', data);
         return
       .error (data) ->
         #console.log 'error', data 
