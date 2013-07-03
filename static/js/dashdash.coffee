@@ -1,22 +1,19 @@
 'use strict';
-app = angular.module 'app', []
+app = angular.module 'app', ['ngCookies']
 
-app.factory 'User', ['$rootScope', ($rootScope) ->
+app.factory 'User', ['$rootScope', '$cookies', ($rootScope, $cookies) ->
 
     User = $rootScope.$new()
 
     User.$on 'join', (event, data) ->
-      #console.log 'service join'
+      $cookies.user = JSON.stringify data
       return
 
     User.$on 'logout', (event, data) ->
-      #console.log 'service logout'
+      $cookies.user = JSON.stringify data
       return
 
-    User.init = 
-      userId: ""
-      email: ""
-      token: null
+    User.init = JSON.parse $cookies.user || "{}"
 
     User
 ]
