@@ -18,6 +18,41 @@ app.factory 'User', ['$rootScope', '$cookies', ($rootScope, $cookies) ->
     User
 ]
 
+app.config ['$routeProvider', '$locationProvider', ($routeProvider, $locationProvider) ->
+
+  $routeProvider
+    .when '/orders',
+      templateUrl: 'orders.html'
+      controller: 'ordersController'
+    .when '/showcase',
+      templateUrl: 'showcase.html'
+      controller: 'showcaseController'
+    .when '/goods',
+      templateUrl: 'goods.html'
+      controller: 'goodsController'
+    .otherwise
+      templateUrl: 'default.html'
+      controller: 'defaultController'
+
+  return
+]
+
+app.controller 'defaultController', ['$scope', 'User', '$http', ($scope, User, $http) ->
+  console.log 'defaultController'
+]
+
+app.controller 'goodsController', ['$scope', 'User', '$http', ($scope, User, $http) ->
+  console.log 'goodsController'
+]
+
+app.controller 'showcaseController', ['$scope', 'User', '$http', ($scope, User, $http) ->
+  console.log 'showcaseController'
+]
+
+app.controller 'ordersController', ['$scope', 'User', '$http', ($scope, User, $http) ->
+  console.log 'ordersController'
+]
+
 app.controller 'authController', ['$scope', 'User', '$http', ($scope, User, $http) ->
 
   $scope.user = User.init
