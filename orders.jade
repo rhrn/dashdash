@@ -1,0 +1,13 @@
+form.well(ng-controller="ordersController", ng-show="user.token != empty")
+  .article
+    input(type="text", placeholder="article")
+  .title
+    input(type="text", placeholder="title")
+  .description
+    textarea(type="text", placeholder="description")
+  .discount
+    input(type="text", placeholder="discount")
+  .images
+    input(type="file", placeholder="file")
+  .submit
+    button.btn(ng-click="add()") add
