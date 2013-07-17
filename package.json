@@ -1,0 +1,26 @@
+{
+  "name": "dashdash",
+  "version": "0.0.0",
+  "description": "init commit",
+  "main": "server.js",
+  "dependencies": {
+    "mongodb": "latest",
+    "express": "latest"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/rhrn/dashdash.git"
+  },
+  "keywords": [
+    "shop",
+    "e-commerical"
+  ],
+  "author": "@rhrn",
+  "license": "BSD",
+  "readmeFilename": "README.md",
+  "gitHead": "192fc28c1cd3bb6dd0fe62dad480a17c7eb5f358"
+}
