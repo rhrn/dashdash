@@ -10,8 +10,13 @@ block login
 
 block user
     ul.nav.pull-right(ng-controller="authController", ng-show="user.token != empty")
-      li: a Hello, {{user.email}}!
-      li: a(href="#", ng-click="logout()") logout
+      li: a(href="#/user") Hello, {{user.email}}!
+      li: a(href="#/logout", ng-click="logout()") logout
+
+block templates
+  script(id="default.html", type="text/ng-template")
+    h1 Default!!!
+
 
 block scripts
   script(src="static/js/dashdash.js")
