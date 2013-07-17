@@ -1,10 +1,10 @@
 !!!
-html(ng-app="app")
+html(ng-app="dashdash")
 
   head
     title dashdash.ru
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
-    link(href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css", rel="stylesheet")
+    link(href="/static/css/bootstrap-combined.min.css", rel="stylesheet")
 
   body
   
@@ -12,11 +12,11 @@ html(ng-app="app")
       block nav
         .navbar
           .navbar-inner
-            a.brand(href="#") DashDash.ru
+            a.brand(href="#/") dashdash.ru
             ul.nav
-              li: a(href="#orders") Orders
-              li: a(href="#showcase") Showcase
-              li: a(href="#goods") Goods
+              li: a(href="#/orders") orders
+              li: a(href="#/showcase") showcase
+              li: a(href="#/goods") goods
             block user
 
      .row-fluid 
@@ -30,11 +30,14 @@ html(ng-app="app")
 
       block footer
         .row-fluid
-          .span12
+          .span4.offset4
             span.twitter @dashdashru
             span.facebook @dashdash
             span.vkontakte @dashdash
 
-    script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.15/angular.min.js")
-    script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.15/angular-cookies.min.js")
+    block templates
+
+    script(src="/static/js/angular.js")
+    script(src="/static/js/angular-cookies.js")
+    script(src="/static/js/angular-resource.js")
     block scripts
