@@ -1,1 +1,72 @@
-h1 Goods
+mixin input(name, params)
+  div(class="#{name}")
+    if params.el == 'select'
+      #{params.el}(class="input-xlarge", type=params.type, data-ng-model="item.#{name}", placeholder="#{name}")
+        each option in params.options
+          option(value="#{option}") #{option}
+    else
+      #{params.el}(class="input-xlarge", type=params.type, data-ng-model="item.#{name}", placeholder="#{name}")
+      
+.btn(ng-click="new()") new
+
+form.well(ng-hide="item == null")
+  .row-fluid
+    .span6
+      mixin input('article', {el: 'input', type: 'text'})
+      mixin input('title', {el: 'input', type: 'text'})
+      mixin input('description', {el: 'textarea', type: 'text'})
+      mixin input('currency', {el: 'select', options: {RUR:'RUR', USD:'USD'}})
+      mixin input('cost', {el: 'input', type: 'text'})
+      mixin input('options', {el: 'textarea', type: 'text'})
+      mixin input('quantity', {el: 'input', type: 'number'})
+      mixin input('imagesURL', {el: 'textarea', type: 'text'})
+      mixin input('images', {el: 'input', type: 'file'})
+      mixin input('tags', {el: 'textarea', type: 'text'})
+      mixin input('origin', {el: 'input', type: 'text'})
+      .submit(ng-show="item._id == empty")
+        button.btn(ng-click="add()") add
+      .update(ng-show="item._id != empty")
+        button.btn(ng-click="save()") save
+    .span6.images
+
+table.table.list
+  thead
+    tr
+      th: |id
+      th: |article
+      th: |title
+      th: |description
+      th: |currency
+      th: |cost
+      th: |options
+      th: |quantity
+      th: |images
+      th: |origin
+      th: |tags
+      th: |actions
+    
+  tbody(ng-repeat="item in goods")
+    tr
+      td.id(ng-click="edit(item._id)")
+        .icon-edit
+      td.article {{item.article}}
+      td.title {{item.title}}
+      td.description {{item.description}}
+      td.currency {{item.currency}}
+      td.cost {{item.cost}}
+      td.options {{item.options}}
+      td.quantity {{item.quantity}}
+      td.images {{item.images}}
+      td.origin
+        a.icon-share(href="{{item.origin}}", target="_blank")
+      td.tags {{item.tags}}
+      td.actions
+        .delete
+          button.btn(ng-click="delete(item._id)") delete
+    tr
+      td.images(colspan="11")
+        .row-fluid
+          .span2
+            input(type="file", file="{{item._id}}", multiple) 
+          .span6
+            input.input-xxlarge(type="text", ng-model="upload.url", ng-change="uploadUrlFiles(item._id, upload.url)", placeholder="paste http(s)://image.url")
