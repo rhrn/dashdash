@@ -1,13 +1,18 @@
-form.well(ng-controller="ordersController", ng-show="user.token != empty")
-  .article
-    input(type="text", placeholder="article")
-  .title
-    input(type="text", placeholder="title")
-  .description
-    textarea(type="text", placeholder="description")
-  .discount
-    input(type="text", placeholder="discount")
-  .images
-    input(type="file", placeholder="file")
-  .submit
-    button.btn(ng-click="add()") add
+table.table
+  thead
+    tr.row-fluid
+      th: |id
+      th: |goods
+      th: |total cost
+      th: |author
+      th: |description
+      th: |status
+  tbody
+    tr.row-fluid.show-grid(ng-repeat="order in orders")
+      td: {{order.id}}
+      td: {{order.goods}}
+      td: {{order.totalCost}}
+      td: {{order.author}}
+      td: {{order.description}}
+      td: {{order.status}}
+
