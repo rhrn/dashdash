@@ -1,82 +1,169 @@
 'use strict';
-app = angular.module 'app', ['ngCookies']
 
-app.factory 'User', ['$rootScope', '$cookies', ($rootScope, $cookies) ->
-
-    User = $rootScope.$new()
-
-    User.$on 'join', (event, data) ->
-      $cookies.user = JSON.stringify data
-      return
-
-    User.$on 'logout', (event, data) ->
-      $cookies.user = JSON.stringify data
-      return
-
-    User.init = JSON.parse $cookies.user || "{}"
-
-    User
-]
+app = angular.module 'dashdash', ['ngCookies', 'ngResource']
 
 app.config ['$routeProvider', '$locationProvider', ($routeProvider, $locationProvider) ->
 
   $routeProvider
-    .when '/orders',
-      templateUrl: 'orders.html'
-      controller: 'ordersController'
+    .when '/',
+      templateUrl: 'default.html'
+      controller: 'defaultController'
     .when '/showcase',
       templateUrl: 'showcase.html'
       controller: 'showcaseController'
+    .when '/orders',
+      templateUrl: 'orders.html'
+      controller: 'ordersController'
     .when '/goods',
       templateUrl: 'goods.html'
       controller: 'goodsController'
+    .when '/user',
+      templateUrl: 'user.html'
+      controller: 'userController'
     .otherwise
-      templateUrl: 'default.html'
-      controller: 'defaultController'
+      redirectTo: '/'
 
+  console.log 'config'
   return
 ]
 
-app.controller 'defaultController', ['$scope', 'User', '$http', ($scope, User, $http) ->
-  console.log 'defaultController'
+app.factory 'Auth', ['$rootScope', '$http', '$cookies', ($rootScope, $http, $cookies) ->
+
+    Auth = $rootScope.$new()
+
+    Auth.$on 'join', (event, data) ->
+      $cookies.user = JSON.stringify data
+      return
+
+    Auth.$on 'logout', (event, data) ->
+      $cookies.user = JSON.stringify data
+      return
+
+    Auth.user = ->
+      JSON.parse $cookies.user || "{}"
+
+    Auth.join = ->
+    Auth.logout = ->
+    Auth.isAuthed = ->
+    Auth.token = ->
+      JSON.parse($cookies.user).token
+
+    Auth
 ]
 
-app.controller 'goodsController', ['$scope', 'User', '$http', ($scope, User, $http) ->
+app.factory 'Api', ['$resource', 'Auth', ($resource, Auth) ->
+
+  console.log 'Api'
+
+  Api = $resource '//localhost\\:8005/api/v1/:method/:id', {},
+    get:
+      method: 'GET'
+      isArray: true
+      headers:
+        Auth: Auth.token()
+    put:
+      method: 'PUT'
+      headers:
+        Auth: Auth.token()
+    post:
+      method: 'POST'
+      headers:
+        Auth: Auth.token()
+  Api
+]
+
+app.directive 'file', ->
+  console.log 'directive file'
+  link: (scope, el, attrs) ->
+    el.bind 'change', (event) ->
+      files = @files || event.target.files
+      scope.uploadFiles attrs.file, files
+      console.log attrs, el
+      return
+    return
+
+app.controller 'goodsController', ['$scope', 'Api', ($scope, Api) ->
+
+  Goods = Api.bind method: 'goods'
+
+  goods = Goods.get -> 
+    $scope.goods = goods
+    return
+
+  $scope.new = ->
+    $scope.item = {}
+    return
+
+  $scope.add = ->
+    Goods.post $scope.item, (data) ->
+      $scope.goods.unshift data
+      $scope.item = data
+      return
+    return
+
+  $scope.save = ->
+    Goods.put id:$scope.item["_id"], $scope.item, (data) ->
+      #$scope.item = data
+      return
+    return
+
+  $scope.edit = (id) ->
+    Goods.get id:id, (data) ->
+      #console.log data
+      $scope.item = data[0]
+    return
+
+  $scope.delete = (id) ->
+    Goods.delete id:id
+    return
+
+  $scope.uploadFiles = (id, files) ->
+    console.log 'scope', id, files
+    return
+
+  $scope.uploadUrlFiles = (id, urls) ->
+    console.log 'scope', id, urls
+    return
+
   console.log 'goodsController'
+  return
 ]
 
-app.controller 'showcaseController', ['$scope', 'User', '$http', ($scope, User, $http) ->
-  console.log 'showcaseController'
-]
+app.controller 'ordersController', ['$scope', 'Api', ($scope, Api) ->
 
-app.controller 'ordersController', ['$scope', 'User', '$http', ($scope, User, $http) ->
+  Orders = Api.bind method: 'orders'
+
+  orders = Orders.get -> 
+    $scope.orders = orders
+
   console.log 'ordersController'
+  return
 ]
 
-app.controller 'authController', ['$scope', 'User', '$http', ($scope, User, $http) ->
+app.controller 'authController', ['$scope', 'Auth', '$http', ($scope, Auth, $http) ->
 
-  $scope.user = User.init
+  $scope.user = Auth.user()
 
-  User.$on 'join', (event, data) ->
-    #console.log 'on join', event, data
+  Auth.$on 'join', (event, data) ->
+    console.log 'on join', event, data
     $scope.user = data
     return
 
   $scope.logout = ->
-    #console.log 'emit logout'
-    User.$emit('logout', {});
+    console.log 'emit logout'
+    Auth.$emit('logout', {});
     $scope.user = {}
     return
 
   return
 ]
 
-app.controller 'joinController', ['$scope', 'User', '$http', ($scope, User, $http) ->
+app.controller 'joinController', ['$scope', 'Auth', '$http', ($scope, Auth, $http) ->
 
-  $scope.user = User.init
+  $scope.user = Auth.user()
 
-  User.$on 'logout', (event, data) ->
-    #console.log 'on logout', event, data
+  Auth.$on 'logout', (event, data) ->
+    console.log 'on logout', event, data
     $scope.user = data
     $scope.error = data
     return
@@ -84,15 +171,30 @@ app.controller 'joinController', ['$scope', 'User', '$http', ($scope, User, $htt
   $scope.join = ->
     $http.post('//localhost:3000/api/v1/join', $scope.user)
       .success (data) ->
-        #console.log 'success', data 
+        console.log 'success', data 
         $scope.user = data
-        User.$emit('join', data);
+        Auth.$emit('join', data);
         return
       .error (data) ->
-        #console.log 'error', data 
+        console.log 'error', data 
         $scope.error = data
         return
     return
 
+  return
+]
+
+app.controller 'defaultController', ['$scope', 'Auth', '$http', ($scope, Auth, $http) ->
+  console.log 'defaultController'
+  return
+]
+
+app.controller 'userController', ['$scope', 'Auth', '$http', ($scope, Auth, $http) ->
+  console.log 'userController'
+  return
+]
+
+app.controller 'showcaseController', ['$scope', 'Auth', '$http', ($scope, Auth, $http) ->
+  console.log 'showcaseController'
   return
 ]
