@@ -19,8 +19,6 @@ form.well(ng-hide="item == null")
       mixin input('cost', {el: 'input', type: 'text'})
       mixin input('options', {el: 'textarea', type: 'text'})
       mixin input('quantity', {el: 'input', type: 'number'})
-      mixin input('imagesURL', {el: 'textarea', type: 'text'})
-      mixin input('images', {el: 'input', type: 'file'})
       mixin input('tags', {el: 'textarea', type: 'text'})
       mixin input('origin', {el: 'input', type: 'text'})
       .submit(ng-show="item._id == empty")
@@ -67,6 +65,10 @@ table.table.list
       td.images(colspan="11")
         .row-fluid
           .span2
-            input(type="file", file="{{item._id}}", multiple) 
+            .btn
+              i.icon-upload
+                input(style="opacity: 0; filter: alpha(opacity=0);", type="file", file="{{item._id}}", multiple) 
           .span6
             input.input-xxlarge(type="text", ng-model="upload.url", ng-change="uploadUrlFiles(item._id, upload.url)", placeholder="paste http(s)://image.url")
+        .row-fluid(ng-repeat="img in goods[item._id].images")
+          img(ng-src="{{img.src}}")
