@@ -58,7 +58,7 @@ app.factory 'Api', ['$resource', 'Auth', ($resource, Auth) ->
   Api = $resource '//localhost\\:8005/api/v1/:method/:id', {},
     get:
       method: 'GET'
-      isArray: true
+      isArray: false
       headers:
         Auth: Auth.token()
     put:
@@ -87,6 +87,7 @@ app.controller 'goodsController', ['$scope', 'Api', ($scope, Api) ->
   Goods = Api.bind method: 'goods'
 
   goods = Goods.get -> 
+    console.log 'get all goods', goods
     $scope.goods = goods
     return
 
@@ -96,24 +97,29 @@ app.controller 'goodsController', ['$scope', 'Api', ($scope, Api) ->
 
   $scope.add = ->
     Goods.post $scope.item, (data) ->
-      $scope.goods.unshift data
-      $scope.item = data
+      $scope.goods[data["_id"]] = data
+      $scope.item = null
       return
     return
 
   $scope.save = ->
-    Goods.put id:$scope.item["_id"], $scope.item, (data) ->
-      #$scope.item = data
+    id = $scope.item["_id"]
+    Goods.put id:id, $scope.item, (data) ->
+      $scope.goods[id] = data
+      $scope.item = null
       return
     return
 
   $scope.edit = (id) ->
+    console.log 'click edit', id
     Goods.get id:id, (data) ->
-      #console.log data
-      $scope.item = data[0]
+      console.log 'edit data', data
+      $scope.item = data
+      return
     return
 
   $scope.delete = (id) ->
+    delete $scope.goods[id]
     Goods.delete id:id
     return
 
@@ -122,7 +128,13 @@ app.controller 'goodsController', ['$scope', 'Api', ($scope, Api) ->
     return
 
   $scope.uploadUrlFiles = (id, urls) ->
+    Upload = Api.bind method: 'goodsUploadUrls', id: id
     console.log 'scope', id, urls
+    Upload.post urls:urls, (data) ->
+      $scope.goods[id].images[id] = data
+      #$scope.item.upload.url = ''
+      console.log 'image', data
+      return
     return
 
   console.log 'goodsController'
