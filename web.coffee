@@ -26,11 +26,13 @@ app.post '/api/v1/goodsUploadUrls/:id', (req, res) ->
       response.pipe file
       mongo.db.collection 'goods', (err, collection) ->
         assert.equal null, err
-        imagekey = "images." + filename
+
+        img = {}
+        img["images." + filename.replace('.', '-')] = 
+          src: '/' + fullPath
+          
         collection.findAndModify _id: new ObjectID(id), [], 
-            $set:
-              imagekey:
-                src: '/' + fullPath
+            $set: img
             {},
             (err, doc) ->
               assert.equal null, err

@@ -72,6 +72,13 @@ app.factory 'Api', ['$resource', 'Auth', ($resource, Auth) ->
   Api
 ]
 
+app.directive 'uploadControls', ->
+  console.log 'directive upload controls'
+  templateUrl: 't-upload-controls'
+  link: (scope, el, attrs) ->
+    console.log scope, el, attrs
+    return
+
 app.directive 'file', ->
   console.log 'directive file'
   link: (scope, el, attrs) ->
@@ -129,11 +136,8 @@ app.controller 'goodsController', ['$scope', 'Api', ($scope, Api) ->
 
   $scope.uploadUrlFiles = (id, urls) ->
     Upload = Api.bind method: 'goodsUploadUrls', id: id
-    console.log 'scope', id, urls
     Upload.post urls:urls, (data) ->
       $scope.goods[id].images[id] = data
-      #$scope.item.upload.url = ''
-      console.log 'image', data
       return
     return
 

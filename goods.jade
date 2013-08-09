@@ -62,13 +62,16 @@ table.table.list
         .delete
           button.btn(ng-click="delete(item._id)") delete
     tr
-      td.images(colspan="11")
-        .row-fluid
-          .span2
-            .btn
-              i.icon-upload
-                input(style="opacity: 0; filter: alpha(opacity=0);", type="file", file="{{item._id}}", multiple) 
-          .span6
-            input.input-xxlarge(type="text", ng-model="upload.url", ng-change="uploadUrlFiles(item._id, upload.url)", placeholder="paste http(s)://image.url")
-        .row-fluid(ng-repeat="img in goods[item._id].images")
-          img(ng-src="{{img.src}}")
+      td.images(colspan="12")
+        div(upload-controls)
+
+script(id="t-upload-controls", type="text/ng-template")
+  .row-fluid
+    .span2
+      .btn
+        i.icon-upload
+          input(style="opacity: 0; filter: alpha(opacity=0);", type="file", file="{{item._id}}", multiple) 
+    .span6
+      input.input-xxlarge(type="text", ng-model="upload.url", ng-change="uploadUrlFiles(item._id, upload.url)", placeholder="paste http(s)://image.url")
+  .row-fluid(ng-repeat="img in goods[item._id].images")
+    img(ng-src="{{img.src}}")
